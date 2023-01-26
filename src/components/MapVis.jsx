@@ -10,6 +10,7 @@ import Form from 'react-bootstrap/Form';
 import Offcanvas from 'react-bootstrap/Offcanvas';
 import "maplibre-gl/dist/maplibre-gl.css";
 import DroneVis from "./DroneVis";
+import ButtonGroup from "react-bootstrap/esm/ButtonGroup";
 
 function MapVis(props) {
 
@@ -23,9 +24,11 @@ function MapVis(props) {
     return (
         <>
         <Container>
-            <Row className="space-between">
-                <Button onClick={toggleLeftPanel}>Toggle Left</Button>
-                <Button onClick={toggleRightPanel}>Toggle Right</Button>
+            <Row className="md">
+                <ButtonGroup>
+                    <Button onClick={toggleLeftPanel} variant="outline-primary">Toggle Left</Button>
+                    <Button onClick={toggleRightPanel} variant="outline-primary">Toggle Right</Button>
+                </ButtonGroup>
             </Row>
             <Row>
             <Col style={{display: showLeftPanel ? 'block': 'none', transition: 'opacity 300ms ease-in'}}>
