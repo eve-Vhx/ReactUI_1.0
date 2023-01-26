@@ -4,15 +4,27 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
 import DroneVis from '../components/DroneVis';
-import NestVis from '../components/NestVis';
+
+//Image imports
+import Logo from '../logos/Logo-01.png';
+
+//Import components
+import ManageObjects from '../components/ManageObjects';
 
 function Single() {
     
     return (
     <>
-        
-        <DroneVis/>
-        <NestVis/>
+        <Container fluid className='justify-content-center'>
+            <Row className='justify-content-center'>
+                <img src={ Logo } alt="" style={{ width: "500px", margin: "1rem" }}/>
+            </Row>
+            <Row className='justify-content-center'>
+                <ManageObjects/>
+            </Row>
+            {/* <DroneVis/> */}
+            
+        </Container>
     </>
     );
 }
