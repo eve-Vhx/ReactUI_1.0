@@ -1,0 +1,14 @@
+.dNBox {
+    border: solid white 2px;
+    border-collapse: separate;
+    border-radius: 10px;
+    overflow: hidden;
+    background-color: grey;
+    opacity: 70%;
+    font-size: 17px;
+    margin-bottom: 10px;
+    
+}
+.dNTitle {
+    font-size: 25px;
+}
