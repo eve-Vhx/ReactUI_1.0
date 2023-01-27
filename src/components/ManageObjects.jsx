@@ -43,6 +43,13 @@ function ManageObjects() {
     const ConnectSystemStatus = () =>setShowSystemStatus('success');
     const DisconnectSystemStatus = () =>setShowSystemStatus('danger');
     const toggleDroneInitModal = () =>setShowDroneInitializeModal(!showDroneInitializeModal);
+
+    function CreateNewDroneObject(type,vin) {
+        var new_drone_obj = new Drone(vin,type,0,0,0);
+        toggleDroneInitModal();
+        console.log("creating new drone");
+        console.log(new_drone_obj);
+    }
     
 
 
@@ -162,7 +169,7 @@ function ManageObjects() {
                 <MapVis drone_obj={test_drone_obj} toggle_modal_={toggleDroneInitModal}/>
             </Row>
             <Row>
-                <CreateDrone show_modal={showDroneInitializeModal} toggle_modal_={toggleDroneInitModal}/>
+                <CreateDrone show_modal={showDroneInitializeModal} toggle_modal_={toggleDroneInitModal} create_new_drone_={CreateNewDroneObject}/>
             </Row>
         </>
     );

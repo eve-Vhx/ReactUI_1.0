@@ -12,6 +12,7 @@ import Table from "react-bootstrap/Table";
 
 
 
+
 function CreateDroneModal(props) {
 
     const [show, setShow] = React.useState(false);
@@ -30,6 +31,10 @@ function CreateDroneModal(props) {
     const vinChangeHandler = (event) => {
         SetnewDrone_vin(event.target.value);
       };
+
+    function CreateNewDroneObject() {
+        props.create_new_drone_(newDrone_type, newDrone_vin);
+    }
 
 
   return(
@@ -73,7 +78,7 @@ function CreateDroneModal(props) {
                             </Form.Select>
                         </FloatingLabel>
                     </Col>
-                    <Button variant="primary" onClick={handleClose}>
+                    <Button variant="primary" onClick={CreateNewDroneObject}>
                         Initialize Drone
                     </Button>
                 </Form>
