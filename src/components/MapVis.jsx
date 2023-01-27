@@ -12,6 +12,9 @@ import "maplibre-gl/dist/maplibre-gl.css";
 import DroneVis from "./DroneVis";
 import ButtonGroup from "react-bootstrap/esm/ButtonGroup";
 
+//Import components
+import DroneNestManagement from './DroneNestManagement';
+
 function MapVis(props) {
 
     const [showLeftPanel, setShowLeftPanel] = useState(false);
@@ -31,9 +34,9 @@ function MapVis(props) {
                 </ButtonGroup>
             </Row>
             <Row>
-            <Col style={{display: showLeftPanel ? 'block': 'none', transition: 'opacity 300ms ease-in'}}>
+            <Col xs={3} style={{display: showLeftPanel ? 'block': 'none', transition: 'opacity 300ms ease-in'}}>
                 <Row>
-                    Right Data
+                    <DroneNestManagement toggle_modal_={props.toggle_modal_}/>
                 </Row>
             </Col>
             <Col fluid>
@@ -54,7 +57,7 @@ function MapVis(props) {
                 >
                 </Map>
             </Col>
-            <Col style={{display: showRightPanel ? 'block': 'none', transition: 'opacity 300ms ease-in'}}>
+            <Col xs={3} style={{display: showRightPanel ? 'block': 'none', transition: 'opacity 300ms ease-in'}}>
                 <DroneVis/>
             </Col>
             </Row>
