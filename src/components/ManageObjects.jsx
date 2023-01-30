@@ -14,6 +14,7 @@ import Table from "react-bootstrap/Table";
 //Import components
 import MapVis from './MapVis';
 import CreateDrone from './modals/CreateDrone';
+import DeleteDrone from './modals/DeleteDrone';
 import ButtonGroup from "react-bootstrap/esm/ButtonGroup";
 
 //Import Ros topics
@@ -33,22 +34,47 @@ import { Drone } from "../models/drone";
 export const ROSLIB = require('roslib');
 export const ros = new ROSLIB.Ros();
 
+//Global data arrays
+var drone_obj_array = [];
+var nest_obj_array = [];
+var drone_master_list = ['000','001','002'];
+
+//Initialize all drones
+var drone1_obj = new Drone('001','QROW',0,0,0);
+drone_obj_array.push(drone1_obj);
+var drone2_obj = new Drone('002','QROW',0,0,0);
+drone_obj_array.push(drone2_obj);
+var drone3_obj = new Drone('003','QROW',0,0,0);
+drone_obj_array.push(drone3_obj);
 
 function ManageObjects() {
 
     const [showSystemStatus, setShowSystemStatus] = React.useState('');
     const [rosConnected, setRosConnected] = React.useState(false);
     const [showDroneInitializeModal, setShowDroneInitializeModal] = React.useState(false);
+    const [showDroneDeleteModal, setShowDroneDeleteModal] = React.useState(false);
 
     const ConnectSystemStatus = () =>setShowSystemStatus('success');
     const DisconnectSystemStatus = () =>setShowSystemStatus('danger');
     const toggleDroneInitModal = () =>setShowDroneInitializeModal(!showDroneInitializeModal);
+    const toggleDroneDeleteModal = () =>setShowDroneDeleteModal(!showDroneDeleteModal);
 
     function CreateNewDroneObject(type,vin) {
-        var new_drone_obj = new Drone(vin,type,0,0,0);
+        for(var i=0; i<drone_obj_array.length; i++) {
+            if(drone_obj_array[i].id === vin) {
+                drone_obj_array[i].initialized = true;
+            }
+        }
         toggleDroneInitModal();
-        console.log("creating new drone");
-        console.log(new_drone_obj);
+    }
+
+    function DeleteDroneObject(type,vin) {
+        for(var i=0; i<drone_obj_array.length; i++) {
+            if(drone_obj_array[i].id === vin) {
+                drone_obj_array[i].initialized = false;
+            }
+        }
+        toggleDroneDeleteModal();
     }
     
 
@@ -166,10 +192,11 @@ function ManageObjects() {
                 </Col>
             </Row>
             <Row>
-                <MapVis drone_obj={test_drone_obj} toggle_modal_={toggleDroneInitModal}/>
+                <MapVis drone_obj={test_drone_obj} toggle_modal_={toggleDroneInitModal} toggle_delete_modal_={toggleDroneDeleteModal} drone_obj_array={drone_obj_array}/>
             </Row>
             <Row>
-                <CreateDrone show_modal={showDroneInitializeModal} toggle_modal_={toggleDroneInitModal} create_new_drone_={CreateNewDroneObject}/>
+                <CreateDrone drone_obj_array={drone_obj_array} show_modal={showDroneInitializeModal} toggle_modal_={toggleDroneInitModal} create_new_drone_={CreateNewDroneObject}/>
+                <DeleteDrone drone_obj_array={drone_obj_array} show_delete_modal={showDroneDeleteModal} toggle_delete_modal_={toggleDroneDeleteModal} delete_drone={DeleteDroneObject} />
             </Row>
         </>
     );

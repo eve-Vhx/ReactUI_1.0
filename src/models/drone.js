@@ -24,5 +24,6 @@ export class Drone {
         this.wifi_connect = null;
         this.lte_connect = null;
 
+        this.initialized = false;
     }
 }

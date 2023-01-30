@@ -13,7 +13,7 @@ import Table from "react-bootstrap/Table";
 
 
 
-function CreateDroneModal(props) {
+function DeleteDroneModal(props) {
 
     const [show, setShow] = React.useState(false);
 
@@ -22,7 +22,7 @@ function CreateDroneModal(props) {
 
     // State functions for form data
     const [newDrone_type, SetnewDrone_type] = React.useState("QROW");
-    const [newDrone_vin, SetnewDrone_vin] = React.useState("");
+    const [newDrone_vin, SetnewDrone_vin] = React.useState("001");
 
     const typeChangeHandler = (event) => {
         SetnewDrone_type(event.target.value);
@@ -30,17 +30,16 @@ function CreateDroneModal(props) {
 
     const vinChangeHandler = (event) => {
         SetnewDrone_vin(event.target.value);
-        console.log("changing the VIN");
       };
-
-    function CreateNewDroneObject() {
-        props.create_new_drone_(newDrone_type, newDrone_vin);
+    
+    function deleteDrone() {
+        props.delete_drone(newDrone_type, newDrone_vin);
     }
 
     var drone_options = [<option></option>];
 
     for (let i=0; i<props.drone_obj_array.length; i++) {
-        if(!props.drone_obj_array[i].initialized) {
+        if(props.drone_obj_array[i].initialized) {
             drone_options.push(
                 <option value={props.drone_obj_array[i].id}>{props.drone_obj_array[i].id}</option>
             )
@@ -52,11 +51,10 @@ function CreateDroneModal(props) {
     <>
 
         {/* Start Modal */}
-
-        <Modal show={ props.show_modal } onHide={ props.toggle_modal_ }>
+        <Modal show={ props.show_delete_modal } onHide={ props.toggle_delete_modal_ }>
             <Modal.Header closeButton>
                 <Modal.Title>
-                    Initialize Drone
+                    Delete Drone
                 </Modal.Title>
             </Modal.Header>
 
@@ -65,13 +63,13 @@ function CreateDroneModal(props) {
                     <Col>
                         <Row className="pb-3 px-1">
                             <Form.Text className="text-muted">
-                                Please select a drone to initialize in the map. By selecting a drone type and VIN number the system will automatically look for and connect to the drone.
+                                Please select a drone to delete on the map. This drone will no longer send information to the UI.
                             </Form.Text>
                         </Row>
                         <FloatingLabel
                             controlId='floatingSelect' 
                             label='Vehicle Type' 
-                            style={{ color:'blue', fontSize:'1rem' }}
+                            style={{ color:'red', fontSize:'1rem' }}
                             className="mb-3">
                             <Form.Select aria-label='Select Vehicle Type' value={newDrone_type} onChange={typeChangeHandler}>
                                 <option value="QROW">QROW</option>
@@ -81,15 +79,15 @@ function CreateDroneModal(props) {
                         <FloatingLabel 
                             controlId='floatingSelect' 
                             label='VIN' 
-                            style={{ color:'blue', fontSize:'1rem' }}
+                            style={{ color:'red', fontSize:'1rem' }}
                             className="mb-3">
                             <Form.Select aria-label='Select VIN' value={newDrone_vin} onChange={vinChangeHandler}>
                                 {drone_options}
                             </Form.Select>
                         </FloatingLabel>
                     </Col>
-                    <Button variant="primary" onClick={CreateNewDroneObject}>
-                        Initialize Drone
+                    <Button variant="danger" onClick={deleteDrone}>
+                        Delete Drone
                     </Button>
                 </Form>
             </Modal.Body>
@@ -100,4 +98,4 @@ function CreateDroneModal(props) {
   );
 }
 
-export default CreateDroneModal;
+export default DeleteDroneModal;

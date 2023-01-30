@@ -15,6 +15,20 @@ import Table from 'react-bootstrap/Table';
 
 function DroneNestManagement(props) {
 
+    const drone_rows = []
+
+    for (let i=0; i<props.drone_obj_array.length; i++) {
+        if(props.drone_obj_array[i].initialized) {
+            drone_rows.push(
+                <tr>
+                <td><h4>{props.drone_obj_array[i].dtype} {props.drone_obj_array[i].id}</h4></td>
+                <td><h4>ONLINE</h4></td>
+                </tr>
+            )
+        }
+    }
+
+
     
 
     return(
@@ -29,7 +43,7 @@ function DroneNestManagement(props) {
             <Col>
                 <ButtonGroup>
                     <Button variant="outline-success" onClick={props.toggle_modal_}>+ Drone</Button>
-                    <Button variant="outline-danger">- Drone</Button>
+                    <Button variant="outline-danger" onClick={props.toggle_delete_modal_}>- Drone</Button>
                 </ButtonGroup>
             </Col>
             <Col>
@@ -49,10 +63,8 @@ function DroneNestManagement(props) {
                     </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td><h4>QROW 001</h4></td>
-                            <td><h4>ONLINE</h4></td>
-                        </tr>
+                        {drone_rows}
+                            
                         <tr>
                             <td><h4>NEST 001</h4></td>
                             <td><h4>ONLINE</h4></td>

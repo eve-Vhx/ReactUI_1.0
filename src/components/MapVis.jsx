@@ -36,7 +36,7 @@ function MapVis(props) {
             <Row>
             <Col xs={3} style={{display: showLeftPanel ? 'block': 'none', transition: 'opacity 300ms ease-in'}}>
                 <Row>
-                    <DroneNestManagement toggle_modal_={props.toggle_modal_}/>
+                    <DroneNestManagement toggle_delete_modal_={props.toggle_delete_modal_} toggle_modal_={props.toggle_modal_} drone_obj_array={props.drone_obj_array}/>
                 </Row>
             </Col>
             <Col fluid>
