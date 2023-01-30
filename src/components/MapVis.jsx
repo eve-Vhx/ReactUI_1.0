@@ -12,6 +12,7 @@ import "maplibre-gl/dist/maplibre-gl.css";
 import DroneVis from "./DroneVis";
 import NestVis from "./NestVis";
 import"../css/MV.css"
+import ButtonGroup from "react-bootstrap/esm/ButtonGroup";
 
 function MapVis(props) {
 
