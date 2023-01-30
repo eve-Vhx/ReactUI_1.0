@@ -17,12 +17,13 @@ function Single() {
     <>
         <Container fluid className='justify-content-center'>
             <Row className='justify-content-center'>
-                <img src={ Logo } alt="" style={{ width: "500px", margin: "1rem" }}/>
+                <img src={ Logo } alt="" style={{ width: "200px", margin: "1rem" }}/>
             </Row>
             <Row className='justify-content-center'>
                 <ManageObjects/>
             </Row>
             {/* <DroneVis/> */}
+            
         </Container>
     </>
     );

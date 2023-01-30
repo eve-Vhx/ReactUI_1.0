@@ -28,6 +28,19 @@ function DroneNestManagement(props) {
         }
     }
 
+    const nest_rows = []
+
+    for (let i=0; i<props.nest_obj_array.length; i++) {
+        if(props.nest_obj_array[i].initialized) {
+            nest_rows.push(
+                <tr>
+                <td><h4>NEST {props.nest_obj_array[i].id}</h4></td>
+                <td><h4>ONLINE</h4></td>
+                </tr>
+            )
+        }
+    }
+
 
     
 
@@ -48,8 +61,8 @@ function DroneNestManagement(props) {
             </Col>
             <Col>
                 <ButtonGroup>
-                    <Button variant="outline-success">+ Nest</Button>
-                    <Button variant="outline-danger">- Nest</Button>
+                    <Button variant="outline-success" onClick={props.toggle_nest_modal_}>+ Nest</Button>
+                    <Button variant="outline-danger" onClick={props.toggle_nest_delete_modal_}>- Nest</Button>
                 </ButtonGroup>
             </Col>
         </Row>
@@ -64,11 +77,7 @@ function DroneNestManagement(props) {
                     </thead>
                     <tbody>
                         {drone_rows}
-                            
-                        <tr>
-                            <td><h4>NEST 001</h4></td>
-                            <td><h4>ONLINE</h4></td>
-                        </tr>
+                        {nest_rows}
                     </tbody>
                 </Table>
             </Container>

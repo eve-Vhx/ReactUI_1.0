@@ -12,5 +12,7 @@ export class Nest {
     constructor(id, latitude, longitude, altitude) {
         this.id = id;
         this.position = [latitude, longitude, altitude];
+
+        this.initialized =false;
     }
 }

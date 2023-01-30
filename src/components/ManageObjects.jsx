@@ -10,10 +10,10 @@ import Row from "react-bootstrap/Row";
 import Container from "react-bootstrap/Container";
 import Badge from "react-bootstrap/Badge";
 import Table from "react-bootstrap/Table";
-
 //Import components
 import MapVis from './MapVis';
 import CreateDrone from './modals/CreateDrone';
+import CreateNest from './modals/CreateNest';
 import DeleteDrone from './modals/DeleteDrone';
 import ButtonGroup from "react-bootstrap/esm/ButtonGroup";
 
@@ -29,6 +29,7 @@ import { Nest_gps_request_outgoing } from "../ROSTopics/rosTopics";
 
 //Import models
 import { Drone } from "../models/drone";
+import { Nest } from "../models/nest";
 
 //Global ROS Variables
 export const ROSLIB = require('roslib');
@@ -37,7 +38,6 @@ export const ros = new ROSLIB.Ros();
 //Global data arrays
 var drone_obj_array = [];
 var nest_obj_array = [];
-var drone_master_list = ['000','001','002'];
 
 //Initialize all drones
 var drone1_obj = new Drone('001','QROW',0,0,0);
@@ -47,17 +47,26 @@ drone_obj_array.push(drone2_obj);
 var drone3_obj = new Drone('003','QROW',0,0,0);
 drone_obj_array.push(drone3_obj);
 
+//Initialize all nests
+var nest1_obj = new Nest('001',0,0,0);
+nest_obj_array.push(nest1_obj);
+
+
 function ManageObjects() {
 
     const [showSystemStatus, setShowSystemStatus] = React.useState('');
     const [rosConnected, setRosConnected] = React.useState(false);
     const [showDroneInitializeModal, setShowDroneInitializeModal] = React.useState(false);
     const [showDroneDeleteModal, setShowDroneDeleteModal] = React.useState(false);
+    const [showNestInitializeModal, setShowNestInitializeModal] = React.useState(false);
+    const [showNestDeleteModal, setShowNestDeleteModal] = React.useState(false);
 
     const ConnectSystemStatus = () =>setShowSystemStatus('success');
     const DisconnectSystemStatus = () =>setShowSystemStatus('danger');
     const toggleDroneInitModal = () =>setShowDroneInitializeModal(!showDroneInitializeModal);
     const toggleDroneDeleteModal = () =>setShowDroneDeleteModal(!showDroneDeleteModal);
+    const toggleNestInitModal = () =>setShowNestInitializeModal(!showNestInitializeModal);
+    const toggleNestDeleteModal = () =>setShowNestDeleteModal(!showNestDeleteModal);
 
     function CreateNewDroneObject(type,vin) {
         for(var i=0; i<drone_obj_array.length; i++) {
@@ -75,6 +84,24 @@ function ManageObjects() {
             }
         }
         toggleDroneDeleteModal();
+    }
+
+    function CreateNewNestObject(id) {
+        for(var i=0; i<nest_obj_array.length; i++) {
+            if(nest_obj_array[i].id === id) {
+                nest_obj_array[i].initialized = true;
+            }
+        }
+        toggleNestInitModal();
+    }
+
+    function DeleteNestObject(id) {
+        for(var i=0; i<nest_obj_array.length; i++) {
+            if(nest_obj_array[i].id === id) {
+                nest_obj_array[i].initialized = false;
+            }
+        }
+        toggleNestDeleteModal();
     }
     
 
@@ -192,10 +219,17 @@ function ManageObjects() {
                 </Col>
             </Row>
             <Row>
-                <MapVis drone_obj={test_drone_obj} toggle_modal_={toggleDroneInitModal} toggle_delete_modal_={toggleDroneDeleteModal} drone_obj_array={drone_obj_array}/>
+                <MapVis 
+                toggle_modal_={toggleDroneInitModal} 
+                toggle_delete_modal_={toggleDroneDeleteModal} 
+                drone_obj_array={drone_obj_array}
+                toggle_nest_modal_={toggleNestInitModal} 
+                toggle__nest_delete_modal_={toggleNestDeleteModal} 
+                nest_obj_array={nest_obj_array}/>
             </Row>
             <Row>
                 <CreateDrone drone_obj_array={drone_obj_array} show_modal={showDroneInitializeModal} toggle_modal_={toggleDroneInitModal} create_new_drone_={CreateNewDroneObject}/>
+                <CreateNest nest_obj_array={nest_obj_array} show_nest_modal={showNestInitializeModal} toggle_nest_modal_={toggleNestInitModal} create_new_nest_={CreateNewNestObject}/>
                 <DeleteDrone drone_obj_array={drone_obj_array} show_delete_modal={showDroneDeleteModal} toggle_delete_modal_={toggleDroneDeleteModal} delete_drone={DeleteDroneObject} />
             </Row>
         </>
