@@ -16,17 +16,12 @@ import '../css/DN.css';
 //import { test_drone_obj, test_nest_obj } from './ManageObjects';
 
 
-function DroneVis(props) {
-    var [gps_data, updateGPSData] = useState([30.391,-97.727,0]);
+function NestVis(props) {
+    var [gps_data, updateGPSData] = useState([30.391,-97.727,0]); // Mission Status
     var [state_data, updateStateData] = useState("OFFLINE");
     var [armed_data, updateArmedData] = useState("OFFLINE");
     var [battery_data, updateBatteryData] = useState("OFFLINE");
-    var [distz_data, updateDistzData] = useState("OFFLINE");
-    var [velx_data, updateVelxData] = useState("OFFLINE");
-    var [velz_data, updateVelzData] = useState("OFFLINE");
-    var [mavros_connect_data, updateMavrosData] = useState("OFFLINE");
-    var [px4_connect_data, updatePx4Data] = useState("OFFLINE");
-    var [wifi_connect_data, updateWifiData] = useState("OFFLINE");
+    var [wifi_connect_data, updateWifiData] = useState("OFFLINE"); //Connection Status
     var [lte_connect_data, updateLteData] = useState("OFFLINE");
 
     /* useEffect(() => {
@@ -59,15 +54,76 @@ function DroneVis(props) {
       }, []); 
       */
 
-    return(
-         <Container className='dNBox justify-content-center'>
-                    <Row className='dNTitle justify-content-center'>Nest</Row>
-                    <Row className='justify-content-center'>Connection Status</Row>
-                    <Row className='justify-content-center'>Mission Status</Row>
+    const [currentTab, setCurrentTab] = useState('1');
+    const tabs = [
+        {
+            id: 1,
+            state_data: 'OFFLINE', // Mission Status
+            battery_data: 'OFFLINE',
 
-         </Container>
+            wifi_connect_data: 'OFFLINE', // Connection Status
+            lte_connect_data: 'OFFLINE'
+        },
+        {
+            id: 2,
+            state_data: 'OFFLINE', // Mission Status
+            battery_data: 'OFFLINE',
 
-    )
+            wifi_connect_data: 'OFFLINE', // Connection Status
+            lte_connect_data: 'OFFLINE'
+        },
+        {
+            id: 3,
+            state_data: 'OFFLINE', // Mission Status
+            battery_data: 'OFFLINE',
+
+            wifi_connect_data: 'OFFLINE', // Connection Status
+            lte_connect_data: 'OFFLINE'
+        },
+        {
+            id: 4,
+            state_data: 'OFFLINE', // Mission Status
+            battery_data: 'OFFLINE',
+
+            wifi_connect_data: 'OFFLINE', // Connection Status
+            lte_connect_data: 'OFFLINE'
+        }
+    ];
+
+    const handleTabClick = (e) => {
+        setCurrentTab(e.target.id);
+    }
+
+    return (
+        <Container fluid className='dNBox justify-content-center'>
+            <div className='tabs justify-content-center'>
+                {tabs.map((tab, i) =>
+                    <>
+                    <Button variant="secondary" 
+                    key={i} id={tab.id} disabled={currentTab === `${tab.id}`} 
+                    onClick={(handleTabClick)}>{'Nest ' + tab.id}</Button>{' '}
+                    </>
+                )}
+            </div>
+            
+            <div className='content'> 
+                {tabs.map((tab, i) =>
+                    <div key={i}>
+                        {currentTab === `${tab.id}` && 
+                        <Col>
+                        <Row className='dNTitle justify-content-center'>Mission Status</Row>
+                            <Row className='content justify-content-center'>state_data { tab.state_data }</Row>
+                            <Row className='content justify-content-center'>battery_data { tab.battery_data }</Row>
+                        <Row className='content dNTitle justify-content-center'>Connection Status</Row>
+                            <Row className='content justify-content-center'>wifi_connect_data { tab.wifi_connect_data }</Row>
+                            <Row className='content justify-content-center'>lte_connect_data { tab.lte_connect_data }</Row>
+                        </Col>
+                        }
+                    </div>
+                )}
+            </div>
+        </Container>
+    );
 }
 
-export default DroneVis;
+export default NestVis;

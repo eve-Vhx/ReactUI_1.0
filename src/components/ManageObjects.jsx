@@ -10,7 +10,6 @@ import Row from "react-bootstrap/Row";
 import Container from "react-bootstrap/Container";
 import Badge from "react-bootstrap/Badge";
 import Table from "react-bootstrap/Table";
-
 //Import components
 import MapVis from './MapVis';
 
