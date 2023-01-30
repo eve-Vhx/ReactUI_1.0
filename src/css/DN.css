@@ -3,7 +3,7 @@ html, body {
     padding: 0 !important;
 }
 .dNBox {
-    border: solid darkblue 2px;
+    border: solid #27276D 2px;
     outline: solid darkgray 2px;
     border-collapse: separate;
     border-radius: 10px;
@@ -21,7 +21,7 @@ html, body {
 .dNTitle {
     color: black;
     background-color: lightgrey;
-    border-bottom: solid darkblue 2px;
+    border-bottom: solid #27276D 2px;
     opacity: 90%;
     font-size: 25px;
     font-weight: 600;
@@ -34,7 +34,7 @@ html, body {
     opacity: 100%;
     padding: 3px;
     font-weight: 600;
-    margin: 0px;
+    margin: 3px;
 }
 .tabs button:hover {
     border: solid white 2px;
@@ -42,7 +42,7 @@ html, body {
 
 }
 .tabs button:disabled {
-    background-color: darkblue;
+    background-color: #27276D;
     font-weight: 700;
 }
 .content {
