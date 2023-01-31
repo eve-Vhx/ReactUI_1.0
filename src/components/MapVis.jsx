@@ -17,14 +17,18 @@ import Overlay from "react-bootstrap/Overlay";
 
 //Import components
 import DroneNestManagement from './DroneNestManagement';
+import MissionControl from "./MissionControl";
 
 //Import images
 import drone_image from "../images/QROW_UI.png";
+import nest_image from "../images/eve_nest.png";
 
 function MapVis(props) {
 
     const [showLeftPanel, setShowLeftPanel] = useState(false);
     const [showRightPanel, setShowRightPanel] = useState(false);
+    const [showDronePopup, setShowDronePopup] = useState(false);
+    const [showNestPopup, setShowNestPopup] = useState(false);
 
     const toggleLeftPanel = () =>setShowLeftPanel(!showLeftPanel);
     const toggleRightPanel = () =>setShowRightPanel(!showRightPanel);
@@ -43,12 +47,46 @@ function MapVis(props) {
                 color="blue"
                 style={{ cursor: "pointer" }}
                 rotation="0"
+                onClick={(e) => {
+                    e.originalEvent.stopPropagation();
+                    setShowDronePopup(!showDronePopup);
+                  }}
                 >
-                    <img src={ drone_image } alt="" width="88px" height="78px" label="QROW"/>
+                    <img src={ drone_image } alt="" width="108px" height="98px" label="QROW"/>
                 </Marker>
-                <Popup style={{ color: "black" }} latitude={ props.drone_obj_array[i].gps_position[0] } longitude={ props.drone_obj_array[i].gps_position[1] } closeButton={0}>
+                { showDronePopup && (<Popup show={false} style={{ color: "black" }} latitude={ props.drone_obj_array[i].gps_position[0] } longitude={ props.drone_obj_array[i].gps_position[1] } closeButton={1} anchor="bottom">
                     QROW {props.drone_obj_array[i].id}
-                </Popup>
+                </Popup>) }
+                </>
+                
+            )
+        }
+    }
+
+    var nest_markers = [];
+
+    for (let i=0; i<props.nest_obj_array.length; i++) {
+        if(props.nest_obj_array[i].initialized) {
+            nest_markers.push(
+                <>
+                
+                <Marker 
+                latitude={ props.nest_obj_array[i].position[0] }
+                longitude={ props.nest_obj_array[i].position[1] }
+                anchor="center"
+                color="blue"
+                style={{ cursor: "pointer" }}
+                rotation="0"
+                onClick={(e) => {
+                    e.originalEvent.stopPropagation();
+                    setShowNestPopup(!showNestPopup);
+                  }}
+                >
+                    <img src={ nest_image } alt="" width="88px" height="78px"/>
+                </Marker>
+                { showNestPopup && (<Popup style={{ color: "black" }} latitude={ props.nest_obj_array[i].position[0] } longitude={ props.nest_obj_array[i].position[1] } closeButton={0}>
+                    NEST {props.nest_obj_array[i].id}
+                </Popup>) }
                 </>
                 
             )
@@ -73,6 +111,11 @@ function MapVis(props) {
                     toggle_nest_modal_={props.toggle_nest_modal_} 
                     nest_obj_array={props.nest_obj_array}/>
                 </Row>
+                <Row>
+                    <MissionControl
+                    toggle_mission_modal={props.toggle_mission_modal}
+                    drone_obj_array={props.drone_obj_array}/>
+                </Row>
             </Col>
             <Col fluid>
                 <Map
@@ -91,6 +134,7 @@ function MapVis(props) {
                     mapStyle="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
                 >
                     {drone_markers}
+                    {nest_markers}
                 </Map>
             </Col>
             <Col xs={3} style={{display: showRightPanel ? 'block': 'none', transition: 'opacity 300ms ease-in'}}>

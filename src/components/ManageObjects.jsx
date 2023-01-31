@@ -15,6 +15,7 @@ import MapVis from './MapVis';
 import CreateDrone from './modals/CreateDrone';
 import CreateNest from './modals/CreateNest';
 import DeleteDrone from './modals/DeleteDrone';
+import CreateMission from './modals/CreateMission';
 import ButtonGroup from "react-bootstrap/esm/ButtonGroup";
 
 //Import Ros topics
@@ -26,6 +27,7 @@ import { Velocity_incoming } from "../ROSTopics/rosTopics";
 import { Battery_incoming } from "../ROSTopics/rosTopics";
 import { Gimbal_outgoing } from "../ROSTopics/rosTopics";
 import { Nest_gps_request_outgoing } from "../ROSTopics/rosTopics";
+import { Mission_request_outgoing } from "../ROSTopics/rosTopics";
 
 //Import models
 import { Drone } from "../models/drone";
@@ -60,6 +62,7 @@ function ManageObjects() {
     const [showDroneDeleteModal, setShowDroneDeleteModal] = React.useState(false);
     const [showNestInitializeModal, setShowNestInitializeModal] = React.useState(false);
     const [showNestDeleteModal, setShowNestDeleteModal] = React.useState(false);
+    const [showMissionModal, setShowMissionModal]= React.useState(false);
 
     const ConnectSystemStatus = () =>setShowSystemStatus('success');
     const DisconnectSystemStatus = () =>setShowSystemStatus('danger');
@@ -67,6 +70,7 @@ function ManageObjects() {
     const toggleDroneDeleteModal = () =>setShowDroneDeleteModal(!showDroneDeleteModal);
     const toggleNestInitModal = () =>setShowNestInitializeModal(!showNestInitializeModal);
     const toggleNestDeleteModal = () =>setShowNestDeleteModal(!showNestDeleteModal);
+    const toggleMissionModal = () => setShowMissionModal(!showMissionModal);
 
     function CreateNewDroneObject(type,vin) {
         for(var i=0; i<drone_obj_array.length; i++) {
@@ -102,6 +106,30 @@ function ManageObjects() {
             }
         }
         toggleNestDeleteModal();
+    }
+
+    function LaunchMission(droneID, destinationGPS) {
+        let service_client_obj = new Mission_request_outgoing()
+        let service_client = service_client_obj.service_client;
+
+        var request = new ROSLIB.ServiceRequest({
+        lat : parseFloat(destinationGPS[0]),
+        lon : parseFloat(destinationGPS[1]),
+        alt : parseFloat(destinationGPS[2])
+        });
+        console.log("Sending mission through to server...");
+        service_client.callService(request, function(result) {
+        console.log('Result for service call: ' + result.completion);
+        });
+
+        for(var i=0; i<drone_obj_array.length; i++) {
+            if(drone_obj_array[i].id === droneID) {
+                drone_obj_array[i].on_mission = true;
+                drone_obj_array[i].mission_destination_gps = destinationGPS;
+            }
+        }
+
+        toggleMissionModal();
     }
     
 
@@ -224,13 +252,15 @@ function ManageObjects() {
                 toggle_delete_modal_={toggleDroneDeleteModal} 
                 drone_obj_array={drone_obj_array}
                 toggle_nest_modal_={toggleNestInitModal} 
-                toggle__nest_delete_modal_={toggleNestDeleteModal} 
-                nest_obj_array={nest_obj_array}/>
+                toggle_nest_delete_modal_={toggleNestDeleteModal} 
+                nest_obj_array={nest_obj_array}
+                toggle_mission_modal={toggleMissionModal}/>
             </Row>
             <Row>
                 <CreateDrone drone_obj_array={drone_obj_array} show_modal={showDroneInitializeModal} toggle_modal_={toggleDroneInitModal} create_new_drone_={CreateNewDroneObject}/>
                 <CreateNest nest_obj_array={nest_obj_array} show_nest_modal={showNestInitializeModal} toggle_nest_modal_={toggleNestInitModal} create_new_nest_={CreateNewNestObject}/>
                 <DeleteDrone drone_obj_array={drone_obj_array} show_delete_modal={showDroneDeleteModal} toggle_delete_modal_={toggleDroneDeleteModal} delete_drone={DeleteDroneObject} />
+                <CreateMission drone_obj_array={drone_obj_array} nest_obj_array={nest_obj_array} show_mission_modal={showMissionModal} toggle_mission_modal_={toggleMissionModal} launch_mission_={LaunchMission}/>
             </Row>
         </>
     );
