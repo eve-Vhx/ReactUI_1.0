@@ -18,6 +18,9 @@ import Overlay from "react-bootstrap/Overlay";
 //Import components
 import DroneNestManagement from './DroneNestManagement';
 
+//Import images
+import drone_image from "../images/QROW_UI.png";
+
 function MapVis(props) {
 
     const [showLeftPanel, setShowLeftPanel] = useState(false);
@@ -26,7 +29,31 @@ function MapVis(props) {
     const toggleLeftPanel = () =>setShowLeftPanel(!showLeftPanel);
     const toggleRightPanel = () =>setShowRightPanel(!showRightPanel);
 
-    const target = useRef(null);
+    var drone_markers = [];
+
+    for (let i=0; i<props.drone_obj_array.length; i++) {
+        if(props.drone_obj_array[i].initialized) {
+            drone_markers.push(
+                <>
+                
+                <Marker 
+                latitude={ props.drone_obj_array[i].gps_position[0] }
+                longitude={ props.drone_obj_array[i].gps_position[1] }
+                anchor="center"
+                color="blue"
+                style={{ cursor: "pointer" }}
+                rotation="0"
+                >
+                    <img src={ drone_image } alt="" width="88px" height="78px" label="QROW"/>
+                </Marker>
+                <Popup style={{ color: "black" }} latitude={ props.drone_obj_array[i].gps_position[0] } longitude={ props.drone_obj_array[i].gps_position[1] } closeButton={0}>
+                    QROW {props.drone_obj_array[i].id}
+                </Popup>
+                </>
+                
+            )
+        }
+    }
 
     return (
         <>
@@ -63,6 +90,7 @@ function MapVis(props) {
                     }}
                     mapStyle="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
                 >
+                    {drone_markers}
                 </Map>
             </Col>
             <Col xs={3} style={{display: showRightPanel ? 'block': 'none', transition: 'opacity 300ms ease-in'}}>
