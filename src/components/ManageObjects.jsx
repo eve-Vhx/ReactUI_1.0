@@ -15,11 +15,13 @@ import MapVis from './MapVis';
 import CreateDrone from './modals/CreateDrone';
 import CreateNest from './modals/CreateNest';
 import DeleteDrone from './modals/DeleteDrone';
+import DeleteNest from './modals/DeleteNest';
 import CreateMission from './modals/CreateMission';
+import NestCharge from './modals/NestCharge';
 import ButtonGroup from "react-bootstrap/esm/ButtonGroup";
 
 //Import Ros topics
-import { ConnectionsDrone_incoming, GPS_incoming } from "../ROSTopics/rosTopics";
+import { ConnectionsDrone_incoming, GPS_incoming, Nest_charge_request_outgoing } from "../ROSTopics/rosTopics";
 import { Connection_checks_incoming } from "../ROSTopics/rosTopics";
 import { State_incoming } from "../ROSTopics/rosTopics";
 import { Distance_incoming } from "../ROSTopics/rosTopics";
@@ -46,8 +48,7 @@ var drone1_obj = new Drone('001','QROW',30,-97,0);
 drone_obj_array.push(drone1_obj);
 var drone2_obj = new Drone('002','QROW',0,0,0);
 drone_obj_array.push(drone2_obj);
-var drone3_obj = new Drone('003','QROW',0,0,0);
-drone_obj_array.push(drone3_obj);
+
 
 //Initialize all nests
 var nest1_obj = new Nest('001',0,0,0);
@@ -63,6 +64,7 @@ function ManageObjects() {
     const [showNestInitializeModal, setShowNestInitializeModal] = React.useState(false);
     const [showNestDeleteModal, setShowNestDeleteModal] = React.useState(false);
     const [showMissionModal, setShowMissionModal]= React.useState(false);
+    const [showNestChargeModal, setShowNestChargeModal] = React.useState(false);
 
     const ConnectSystemStatus = () =>setShowSystemStatus('success');
     const DisconnectSystemStatus = () =>setShowSystemStatus('danger');
@@ -71,6 +73,7 @@ function ManageObjects() {
     const toggleNestInitModal = () =>setShowNestInitializeModal(!showNestInitializeModal);
     const toggleNestDeleteModal = () =>setShowNestDeleteModal(!showNestDeleteModal);
     const toggleMissionModal = () => setShowMissionModal(!showMissionModal);
+    const toggleNestChargeModal = () => setShowNestChargeModal(!showNestChargeModal);
 
     function CreateNewDroneObject(type,vin) {
         for(var i=0; i<drone_obj_array.length; i++) {
@@ -130,6 +133,29 @@ function ManageObjects() {
         }
 
         toggleMissionModal();
+    }
+
+    function InitiateNestCharge(id) {
+        console.log("Initiating nest charge");
+
+        let nest_charge_req_obj = new Nest_charge_request_outgoing();
+        let nest_charge_req = nest_charge_req_obj.service_client;
+
+        var request = new ROSLIB.ServiceRequest({
+            charge_drone : true
+        });
+            
+        console.log("Sending charge request through to server...");
+        nest_charge_req.callService(request, function(result) {
+            console.log('Result for service call: ');
+        });
+        
+        for(var i=0; i<nest_obj_array.length; i++) {
+            if(nest_obj_array[i].id === id) {
+                nest_obj_array[i].charge_status = true;
+            }
+        }
+        toggleNestChargeModal();
     }
     
 
@@ -254,13 +280,16 @@ function ManageObjects() {
                 toggle_nest_modal_={toggleNestInitModal} 
                 toggle_nest_delete_modal_={toggleNestDeleteModal} 
                 nest_obj_array={nest_obj_array}
-                toggle_mission_modal={toggleMissionModal}/>
+                toggle_mission_modal={toggleMissionModal}
+                toggle_nest_charge_modal_={toggleNestChargeModal}/>
             </Row>
             <Row>
                 <CreateDrone drone_obj_array={drone_obj_array} show_modal={showDroneInitializeModal} toggle_modal_={toggleDroneInitModal} create_new_drone_={CreateNewDroneObject}/>
                 <CreateNest nest_obj_array={nest_obj_array} show_nest_modal={showNestInitializeModal} toggle_nest_modal_={toggleNestInitModal} create_new_nest_={CreateNewNestObject}/>
                 <DeleteDrone drone_obj_array={drone_obj_array} show_delete_modal={showDroneDeleteModal} toggle_delete_modal_={toggleDroneDeleteModal} delete_drone={DeleteDroneObject} />
                 <CreateMission drone_obj_array={drone_obj_array} nest_obj_array={nest_obj_array} show_mission_modal={showMissionModal} toggle_mission_modal_={toggleMissionModal} launch_mission_={LaunchMission}/>
+                <DeleteNest nest_obj_array={nest_obj_array} show_delete_nest_modal={showNestDeleteModal} toggle_delete_nest_modal_={toggleNestDeleteModal} delete_nest={DeleteNestObject}/>
+                <NestCharge nest_obj_array={nest_obj_array} show_nest_charge_modal={showNestChargeModal} toggle_nest_charge_modal_={toggleNestChargeModal} initiate_charge={InitiateNestCharge}/>
             </Row>
         </>
     );

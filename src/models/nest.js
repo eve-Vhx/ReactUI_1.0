@@ -14,5 +14,6 @@ export class Nest {
         this.position = [latitude, longitude, altitude];
 
         this.initialized =false;
+        this.charge_status = false;
     }
 }

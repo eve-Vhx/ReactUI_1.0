@@ -27,7 +27,7 @@ function MissionControl(props) {
                 <tr>
                 <td><h4>{props.drone_obj_array[i].dtype} {props.drone_obj_array[i].id}</h4></td>
                 <td><h4>{props.drone_obj_array[i].mission_status}</h4></td>
-                <td><h4>{props.drone_obj_array[i].mission_destination_gps}</h4></td>
+                <td><Col style={{fontSize: "0.5em", color: "white"}} className="px-2"><Row>Lat: {props.drone_obj_array[i].mission_destination_gps[0]}</Row><Row>Lon: {props.drone_obj_array[i].mission_destination_gps[1]}</Row><Row>Alt: {props.drone_obj_array[i].mission_destination_gps[2]}</Row></Col></td>
                 </tr>
             )
         }
@@ -54,7 +54,7 @@ function MissionControl(props) {
                     <th><h4>Destination</h4></th>
                 </tr>
                 </thead>
-                <tbody>
+                <tbody className='justify-content-center'>
                     {drone_mission_details}
                 </tbody>
             </Table>

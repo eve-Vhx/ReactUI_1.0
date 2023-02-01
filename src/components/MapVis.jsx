@@ -18,6 +18,7 @@ import Overlay from "react-bootstrap/Overlay";
 //Import components
 import DroneNestManagement from './DroneNestManagement';
 import MissionControl from "./MissionControl";
+import NestCharging from "./NestCharging";
 
 //Import images
 import drone_image from "../images/QROW_UI.png";
@@ -96,9 +97,11 @@ function MapVis(props) {
     return (
         <>
         <Container>
-            <Row className="space-between">
-                <Button variant="secondary" onClick={toggleLeftPanel}>Toggle Left</Button>
-                <Button variant="secondary" onClick={toggleRightPanel}>Toggle Right</Button>
+            <Row style={{ width: '10vw' }}className="justify-content-center">
+                <ButtonGroup>
+                    <Button variant="secondary" onClick={toggleLeftPanel}>Toggle Control</Button>
+                    <Button variant="secondary" onClick={toggleRightPanel}>Toggle Telemetry</Button>
+                </ButtonGroup>
             </Row>
             <Row>
             <Col xs={3} style={{display: showLeftPanel ? 'block': 'none', transition: 'opacity 300ms ease-in'}}>
@@ -115,6 +118,11 @@ function MapVis(props) {
                     <MissionControl
                     toggle_mission_modal={props.toggle_mission_modal}
                     drone_obj_array={props.drone_obj_array}/>
+                </Row>
+                <Row>
+                    <NestCharging
+                    toggle_nest_charge_modal_={props.toggle_nest_charge_modal_}
+                    nest_obj_array={props.nest_obj_array}/>
                 </Row>
             </Col>
             <Col fluid>
