@@ -18,6 +18,7 @@ import DeleteDrone from './modals/DeleteDrone';
 import DeleteNest from './modals/DeleteNest';
 import CreateMission from './modals/CreateMission';
 import NestCharge from './modals/NestCharge';
+import DeployMissionNest from './modals/DeployMissionNest';
 import ButtonGroup from "react-bootstrap/esm/ButtonGroup";
 
 //Import Ros topics
@@ -44,14 +45,14 @@ var drone_obj_array = [];
 var nest_obj_array = [];
 
 //Initialize all drones
-var drone1_obj = new Drone('001','QROW',30,-97,0);
+var drone1_obj = new Drone('001','QROW',30.391,-97.727,240);
 drone_obj_array.push(drone1_obj);
-var drone2_obj = new Drone('002','QROW',0,0,0);
+var drone2_obj = new Drone('002','QROW',30.392,-97.728,240);
 drone_obj_array.push(drone2_obj);
 
 
 //Initialize all nests
-var nest1_obj = new Nest('001',0,0,0);
+var nest1_obj = new Nest('001',30.390,-97.723,240);
 nest_obj_array.push(nest1_obj);
 
 
@@ -65,6 +66,8 @@ function ManageObjects() {
     const [showNestDeleteModal, setShowNestDeleteModal] = React.useState(false);
     const [showMissionModal, setShowMissionModal]= React.useState(false);
     const [showNestChargeModal, setShowNestChargeModal] = React.useState(false);
+    const [showDeployNestModal, setShowDeployNestModal] = React.useState(false);
+    const [nestDeployPosition, setNestDeployPosition] = React.useState([]);
 
     const ConnectSystemStatus = () =>setShowSystemStatus('success');
     const DisconnectSystemStatus = () =>setShowSystemStatus('danger');
@@ -74,6 +77,7 @@ function ManageObjects() {
     const toggleNestDeleteModal = () =>setShowNestDeleteModal(!showNestDeleteModal);
     const toggleMissionModal = () => setShowMissionModal(!showMissionModal);
     const toggleNestChargeModal = () => setShowNestChargeModal(!showNestChargeModal);
+    const toggleDeployNestModal = () => setShowDeployNestModal(!showDeployNestModal); 
 
     function CreateNewDroneObject(type,vin) {
         for(var i=0; i<drone_obj_array.length; i++) {
@@ -120,7 +124,8 @@ function ManageObjects() {
         lon : parseFloat(destinationGPS[1]),
         alt : parseFloat(destinationGPS[2])
         });
-        console.log("Sending mission through to server...");
+        console.log("Whats going to the service!!");
+        console.log(request);
         service_client.callService(request, function(result) {
         console.log('Result for service call: ' + result.completion);
         });
@@ -156,6 +161,36 @@ function ManageObjects() {
             }
         }
         toggleNestChargeModal();
+    }
+
+    function DeployDroneNest(droneID) {
+        console.log("deploying drone to nest...");
+
+        let service_client_obj = new Mission_request_outgoing()
+        let service_client = service_client_obj.service_client;
+
+        var request = new ROSLIB.ServiceRequest({
+        lat : parseFloat(nestDeployPosition[0]),
+        lon : parseFloat(nestDeployPosition[1]),
+        alt : parseFloat(nestDeployPosition[2])
+        });
+        console.log(nestDeployPosition);
+        service_client.callService(request, function(result) {
+        console.log('Result for service call: ');
+        });
+
+        for(var i=0; i<drone_obj_array.length; i++) {
+            if(drone_obj_array[i].id === droneID) {
+                drone_obj_array[i].on_mission = true;
+                drone_obj_array[i].mission_destination_gps = nestDeployPosition;
+            }
+        }
+
+        toggleDeployNestModal();
+    }
+
+    function setDestNestGPS(nest_pos) {
+        setNestDeployPosition(nest_pos);
     }
     
 
@@ -281,7 +316,9 @@ function ManageObjects() {
                 toggle_nest_delete_modal_={toggleNestDeleteModal} 
                 nest_obj_array={nest_obj_array}
                 toggle_mission_modal={toggleMissionModal}
-                toggle_nest_charge_modal_={toggleNestChargeModal}/>
+                toggle_nest_charge_modal_={toggleNestChargeModal}
+                toggle_deploy_nest_modal_={toggleDeployNestModal}
+                set_dest_nest_gps_={setDestNestGPS}/>
             </Row>
             <Row>
                 <CreateDrone drone_obj_array={drone_obj_array} show_modal={showDroneInitializeModal} toggle_modal_={toggleDroneInitModal} create_new_drone_={CreateNewDroneObject}/>
@@ -290,6 +327,7 @@ function ManageObjects() {
                 <CreateMission drone_obj_array={drone_obj_array} nest_obj_array={nest_obj_array} show_mission_modal={showMissionModal} toggle_mission_modal_={toggleMissionModal} launch_mission_={LaunchMission}/>
                 <DeleteNest nest_obj_array={nest_obj_array} show_delete_nest_modal={showNestDeleteModal} toggle_delete_nest_modal_={toggleNestDeleteModal} delete_nest={DeleteNestObject}/>
                 <NestCharge nest_obj_array={nest_obj_array} show_nest_charge_modal={showNestChargeModal} toggle_nest_charge_modal_={toggleNestChargeModal} initiate_charge={InitiateNestCharge}/>
+                <DeployMissionNest drone_obj_array={drone_obj_array} show_deploy_nest_modal={showDeployNestModal} toggle_deploy_nest_modal_={toggleDeployNestModal} deploy_drone_nest={DeployDroneNest}/>
             </Row>
         </>
     );

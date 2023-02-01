@@ -18,7 +18,7 @@ import { useState } from "react";
 
 function CreateMissionModal(props) {
 
-    var [destinationGPS, setDestinationGPS] = useState([0,0,0]);
+    var [targetNest, setTargetNest] = useState('');
     var [destinationLat, setDestinationLat] = useState(0);
     var [destinationLon, setDestinationLon] = useState(0);
     var [destinationAlt, setDestinationAlt] = useState(0);
@@ -40,7 +40,7 @@ function CreateMissionModal(props) {
     for (let i=0; i<props.nest_obj_array.length; i++) {
         if(props.nest_obj_array[i].initialized) {
             nest_options.push(
-                <option value={props.nest_obj_array[i].position}>{props.nest_obj_array[i].id}</option>
+                <option value={props.nest_obj_array[i].id}>{props.nest_obj_array[i].id}</option>
             )
             // nest_coordinates.push([props.nest_obj_array[i].position[0]],props.nest_obj_array[i].position[1]]);
         }
@@ -48,15 +48,15 @@ function CreateMissionModal(props) {
 
 
     function LaunchNestMission() {
-        console.log("Sending destination to master!");
-        console.log(destinationGPS);
-        props.launch_mission_(droneID, destinationGPS);
+        for(var i=0; i<props.nest_obj_array.length; i++) {
+            if(props.nest_obj_array[i].id === targetNest) {
+                props.launch_mission_(droneID, props.nest_obj_array[i].position)
+            }
+        }
     }
 
     function LaunchNestMission_input() {
         props.launch_mission_(droneID, [destinationLat, destinationLon, destinationAlt]);
-        console.log("Sending input GPS");
-        console.log([destinationLat, destinationLon, destinationAlt]);
     }
 
 
@@ -99,7 +99,7 @@ function CreateMissionModal(props) {
                                     style={{ color:'blue', fontSize:'1rem' }}
                                     className="mb-3">
                                     <Form.Select aria-label='Select Nest ID' onChange={(e) => {
-                                        setDestinationGPS(e.target.value);
+                                        setTargetNest(e.target.value);
                                     }}>
                                         {nest_options}
                                     </Form.Select>

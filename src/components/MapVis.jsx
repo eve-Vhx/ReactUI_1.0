@@ -14,6 +14,8 @@ import NestVis from "./NestVis";
 import"../css/MV.css"
 import ButtonGroup from "react-bootstrap/esm/ButtonGroup";
 import Overlay from "react-bootstrap/Overlay";
+import Card from "react-bootstrap/Card";
+import ListGroup from "react-bootstrap/ListGroup";
 
 //Import components
 import DroneNestManagement from './DroneNestManagement';
@@ -55,8 +57,21 @@ function MapVis(props) {
                 >
                     <img src={ drone_image } alt="" width="108px" height="98px" label="QROW"/>
                 </Marker>
-                { showDronePopup && (<Popup show={false} style={{ color: "black" }} latitude={ props.drone_obj_array[i].gps_position[0] } longitude={ props.drone_obj_array[i].gps_position[1] } closeButton={1} anchor="bottom">
-                    QROW {props.drone_obj_array[i].id}
+                { showDronePopup && (<Popup show={false} style={{ color: "black" }} latitude={ props.drone_obj_array[i].gps_position[0] } longitude={ props.drone_obj_array[i].gps_position[1] } closeButton={0} anchor="bottom">
+                    <Card className="bg-light text-black">
+                        <Card.Header as="h5">QROW {props.drone_obj_array[i].id}</Card.Header>
+                        <Card.Body className="bg-light">
+                            <Container className="p-0 m-0" style={{fontSize: "1.25em"}}>
+                            <ListGroup className="list-group-flush bg-light">
+                                <ListGroup.Item>Latitude: {props.drone_obj_array[i].gps_position[0]}</ListGroup.Item>
+                                <ListGroup.Item>Longitude: {props.drone_obj_array[i].gps_position[1]}</ListGroup.Item>
+                                <ListGroup.Item>Altitude: {props.drone_obj_array[i].gps_position[2]}</ListGroup.Item>
+                                <ListGroup.Item>State: {props.drone_obj_array[i].state}</ListGroup.Item>
+                                <ListGroup.Item>Mission Status: {props.drone_obj_array[i].mission_status}</ListGroup.Item>
+                            </ListGroup>
+                            </Container>
+                        </Card.Body>
+                    </Card>
                 </Popup>) }
                 </>
                 
@@ -86,12 +101,31 @@ function MapVis(props) {
                     <img src={ nest_image } alt="" width="88px" height="78px"/>
                 </Marker>
                 { showNestPopup && (<Popup style={{ color: "black" }} latitude={ props.nest_obj_array[i].position[0] } longitude={ props.nest_obj_array[i].position[1] } closeButton={0}>
-                    NEST {props.nest_obj_array[i].id}
+                    <Card className="bg-light text-black">
+                        <Card.Header as="h5">Nest {props.nest_obj_array[i].id}</Card.Header>
+                        <Card.Body className="bg-light">
+                            <Container className="p-0 m-0" style={{fontSize: "1.25em"}}>
+                            <ListGroup className="list-group-flush bg-light">
+                                <ListGroup.Item>Latitude: {props.nest_obj_array[i].position[0]}</ListGroup.Item>
+                                <ListGroup.Item>Longitude: {props.nest_obj_array[i].position[1]}</ListGroup.Item>
+                                <ListGroup.Item>Altitude: {props.nest_obj_array[i].position[2]}</ListGroup.Item>
+                                <ListGroup.Item>Charge Status: {props.nest_obj_array[i].charge_status}</ListGroup.Item>
+                            </ListGroup>
+                            </Container>
+                        </Card.Body>
+                        <Card.Footer>
+                            <Button variant="success" onClick={props.toggle_deploy_nest_modal_}>Deploy To Nest</Button>
+                        </Card.Footer>
+                    </Card>
                 </Popup>) }
                 </>
                 
             )
         }
+    }
+
+    function DeployCallback(nest_pos) {
+        props.toggle_deploy_nest_modal_();
     }
 
     return (
