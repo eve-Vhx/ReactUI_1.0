@@ -20,6 +20,7 @@ import DroneNestManagement from './DroneNestManagement';
 import MissionControl from "./MissionControl";
 import NestCharging from "./NestCharging";
 import DroneVis from "./DroneVis2";
+import NestVis from "./NestVis2";
 
 //Import images
 import drone_image from "../images/QROW_UI.png";
@@ -70,6 +71,9 @@ function MapVis(props) {
                             </ListGroup>
                             </Container>
                         </Card.Body>
+                        <Card.Footer>
+                            <Button variant="success" onClick={props.toggle_mission_modal}>Deploy Drone</Button>
+                        </Card.Footer>
                     </Card>
                 </Popup>) }
                 </>
@@ -113,7 +117,7 @@ function MapVis(props) {
                             </Container>
                         </Card.Body>
                         <Card.Footer>
-                            <Button variant="success" onClick={props.toggle_deploy_nest_modal_}>Deploy To Nest</Button>
+                            <Button variant="info" onClick={props.toggle_nest_charge_modal_}>Initiate Charging</Button>
                         </Card.Footer>
                     </Card>
                 </Popup>) }
@@ -180,7 +184,7 @@ function MapVis(props) {
             </Col>
             <Col xs={3} style={{display: showRightPanel ? 'block': 'none', transition: 'opacity 300ms ease-in'}}>
                 <DroneVis drone_obj_array={props.drone_obj_array}/>
-                {/* <NestVis nest_obj_array={props.nest_obj_array}/> */}
+                <NestVis nest_obj_array={props.nest_obj_array}/>
             </Col>
             </Row>
         </Container>

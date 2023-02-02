@@ -242,58 +242,58 @@ function ManageObjects() {
                                 //GPS subscriber
                                 GPS_incoming_obj.gps_listener1.subscribe( (message) => {
                                     if(message.lat != NaN) {
-                                        test_drone_obj.gps_position = [message.lat*(10**-7), message.lon*(10**-7), message.alt*(10**-3)]
+                                        drone_obj_array[0].gps_position = [message.lat*(10**-7), message.lon*(10**-7), message.alt*(10**-3)]
                                     }
                                 });
 
                                 //Drone connections subscriber
                                 Connections_drone_obj.connections_listener.subscribe( (message) => {
                                     if (message.mavros === true){
-                                        test_drone_obj.mavros_connect = "CONNECTED";
+                                        drone_obj_array[0].mavros_connect = "CONNECTED";
                                     } else if (message.mavros === false) {
-                                        test_drone_obj.mavros_connect = "DISCONNECTED";
+                                        drone_obj_array[0].mavros_connect = "DISCONNECTED";
                                     }
                                     if (message.px4 === true){
-                                        test_drone_obj.px4_connect = "CONNECTED"
-                                    } else if (message.px4 === false){test_drone_obj.px4_connect = "DISCONNECTED"}
+                                        drone_obj_array[0].px4_connect = "CONNECTED"
+                                    } else if (message.px4 === false){drone_obj_array[0].px4_connect = "DISCONNECTED"}
                                     if (message.wifi === true){
-                                        test_drone_obj.wifi_connect = "CONNECTED"
-                                    } else if (message.wifi === false) {test_drone_obj.wifi_connect = "DISCONNECTED"}
+                                        drone_obj_array[0].wifi_connect = "CONNECTED"
+                                    } else if (message.wifi === false) {drone_obj_array[0].wifi_connect = "DISCONNECTED"}
                                     if (message.lte === true){
-                                        test_drone_obj.lte_connect = "CONNECTED"
-                                    } else if (message.lte === false){test_drone_obj.lte_connect = "DISCONNECTED"}
+                                        drone_obj_array[0].lte_connect = "CONNECTED"
+                                    } else if (message.lte === false){drone_obj_array[0].lte_connect = "DISCONNECTED"}
     
                                 });
 
                                 //State subscriber
                                 State_incoming_obj.state_listener.subscribe( (message) => {
-                                    test_drone_obj.state = message.mode;
+                                    drone_obj_array[0].state = message.mode;
 
                                     if (message.armed == false) {
-                                        test_drone_obj.armed = "DISARMED";
+                                        drone_obj_array[0].armed = "DISARMED";
                                       }
                                       else if (message.armed == true) {
-                                        test_drone_obj.armed = "ARMED";
+                                        drone_obj_array[0].armed = "ARMED";
                                       }
                                       else {
-                                        test_drone_obj.armed = "DISCONNECTED FROM VEHICLE"
+                                        drone_obj_array[0].armed = "DISCONNECTED FROM VEHICLE"
                                       }
                                 });
                                 
                                 //Distance sensor subscriber
                                 Distance_incoming_obj.distance_listener.subscribe( (message) => {
-                                    test_drone_obj.distance_z = message.range.toFixed(1)
+                                    drone_obj_array[0].distance_z = message.range.toFixed(1)
                                 });
 
                                 //Velocity subscriber
                                 Velocity_incoming_obj.velocity_listener.subscribe( (message) => {
-                                    test_drone_obj.vel_x = message.twist.linear.x;
-                                    test_drone_obj.vel_z = message.twist.linear.z;
+                                    drone_obj_array[0].vel_x = message.twist.linear.x;
+                                    drone_obj_array[0].vel_z = message.twist.linear.z;
                                 });
 
                                 //Battery subscriber
                                 battery_incoming_obj.battery_listener.subscribe( (message) => {
-                                    test_drone_obj.battery = message.percentage;
+                                    drone_obj_array[0].battery = message.percentage;
                                 });
                         }}
                     >eve Connect</Button>
