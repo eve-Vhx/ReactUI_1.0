@@ -40,11 +40,11 @@ var drone_obj_array = [];
 var nest_obj_array = [];
 
 //Initialize all drones
-var drone1_obj = new Drone('001','QROW',0,0,0);
+var drone1_obj = new Drone('001','QROW',1,0,0);
 drone_obj_array.push(drone1_obj);
-var drone2_obj = new Drone('002','QROW',0,0,0);
+var drone2_obj = new Drone('002','QROW',0,2,0);
 drone_obj_array.push(drone2_obj);
-var drone3_obj = new Drone('003','QROW',0,0,0);
+var drone3_obj = new Drone('003','QROW',0,0,3);
 drone_obj_array.push(drone3_obj);
 
 //Initialize all nests
