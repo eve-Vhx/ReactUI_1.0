@@ -9,8 +9,6 @@ import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 import Offcanvas from 'react-bootstrap/Offcanvas';
 import "maplibre-gl/dist/maplibre-gl.css";
-import DroneVis from "./DroneVis";
-import NestVis from "./NestVis";
 import"../css/MV.css"
 import ButtonGroup from "react-bootstrap/esm/ButtonGroup";
 import Overlay from "react-bootstrap/Overlay";
@@ -21,6 +19,7 @@ import ListGroup from "react-bootstrap/ListGroup";
 import DroneNestManagement from './DroneNestManagement';
 import MissionControl from "./MissionControl";
 import NestCharging from "./NestCharging";
+import DroneVis from "./DroneVis2";
 
 //Import images
 import drone_image from "../images/QROW_UI.png";
@@ -181,7 +180,7 @@ function MapVis(props) {
             </Col>
             <Col xs={3} style={{display: showRightPanel ? 'block': 'none', transition: 'opacity 300ms ease-in'}}>
                 <DroneVis drone_obj_array={props.drone_obj_array}/>
-                <NestVis nest_obj_array={props.nest_obj_array}/>
+                {/* <NestVis nest_obj_array={props.nest_obj_array}/> */}
             </Col>
             </Row>
         </Container>

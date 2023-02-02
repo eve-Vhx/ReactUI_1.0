@@ -132,7 +132,7 @@ function DroneVis(props) {
         }
     
         return (
-            <Container fluid className='dNBox justify-content-center'>
+            <Container fluid className='justify-content-center'>
 
                 <div className='tabs justify-content-center'>
                     {tabs.map((tab, i) =>
