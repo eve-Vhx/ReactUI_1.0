@@ -64,9 +64,18 @@ function NestChargeModal(props) {
                             </Form.Select>
                         </FloatingLabel>
                     </Col>
+                    <Row className="justify-content-between">
+                    <Col>
                     <Button variant="info" onClick={props.initiate_charge}>
                         Initiate Nest Charging
                     </Button>
+                    </Col>
+                    <Col>
+                    <Button variant="danger" onClick={props.stop_charge}>
+                        Stop Nest Charging
+                    </Button>
+                    </Col>
+                    </Row>
                 </Form>
             </Modal.Body>
 

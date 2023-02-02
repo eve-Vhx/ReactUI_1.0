@@ -117,7 +117,12 @@ function MapVis(props) {
                             </Container>
                         </Card.Body>
                         <Card.Footer>
+                            <Row className="pb-2">
                             <Button variant="info" onClick={props.toggle_nest_charge_modal_}>Initiate Charging</Button>
+                            </Row>
+                            <Row>
+                            <Button variant="warning" onClick={props.update_nest_pos_}>Update Position</Button>
+                            </Row>
                         </Card.Footer>
                     </Card>
                 </Popup>) }

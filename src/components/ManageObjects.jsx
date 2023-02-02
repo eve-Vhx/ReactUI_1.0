@@ -141,7 +141,7 @@ function ManageObjects() {
     }
 
     function InitiateNestCharge(id) {
-        console.log("Initiating nest charge");
+       console.log("Initiating nest charge");
 
         let nest_charge_req_obj = new Nest_charge_request_outgoing();
         let nest_charge_req = nest_charge_req_obj.service_client;
@@ -154,14 +154,37 @@ function ManageObjects() {
         nest_charge_req.callService(request, function(result) {
             console.log('Result for service call: ');
         });
-        
+        nest_obj_array[0].charge_status = "CHARGING";
         for(var i=0; i<nest_obj_array.length; i++) {
             if(nest_obj_array[i].id === id) {
                 nest_obj_array[i].charge_status = true;
             }
         }
         toggleNestChargeModal();
-    }
+    } 
+
+    function StopNestCharge(id) {
+        console.log("Stopping nest charge!");
+ 
+         let nest_charge_req_obj = new Nest_charge_request_outgoing();
+         let nest_charge_req = nest_charge_req_obj.service_client;
+ 
+         var request = new ROSLIB.ServiceRequest({
+             charge_drone : false
+         });
+         nest_obj_array[0].charge_status = "NOT CHARGING";
+         console.log("Sending charge request through to server...");
+         nest_charge_req.callService(request, function(result) {
+             console.log('Result for service call: ');
+         });
+         
+         for(var i=0; i<nest_obj_array.length; i++) {
+             if(nest_obj_array[i].id === id) {
+                 nest_obj_array[i].charge_status = false;
+             }
+         }
+         toggleNestChargeModal();
+     } 
 
     function DeployDroneNest(droneID) {
         console.log("deploying drone to nest...");
@@ -187,6 +210,21 @@ function ManageObjects() {
         }
 
         toggleDeployNestModal();
+    }
+
+    function UpdateNestPos(id) {
+        console.log("updating nest position...");
+
+        let service_client_obj = new Nest_gps_request_outgoing();
+        let service_client = service_client_obj.service_client;
+
+        var request = new ROSLIB.ServiceRequest({
+
+        });
+
+        service_client.callService(request, function(result) {
+        nest_obj_array[0].position = [result.latitude, result.longitude, result.altitude];
+        });
     }
 
     function setDestNestGPS(nest_pos) {
@@ -318,7 +356,8 @@ function ManageObjects() {
                 toggle_mission_modal={toggleMissionModal}
                 toggle_nest_charge_modal_={toggleNestChargeModal}
                 toggle_deploy_nest_modal_={toggleDeployNestModal}
-                set_dest_nest_gps_={setDestNestGPS}/>
+                set_dest_nest_gps_={setDestNestGPS}
+                update_nest_pos_={UpdateNestPos}/>
             </Row>
             <Row>
                 <CreateDrone drone_obj_array={drone_obj_array} show_modal={showDroneInitializeModal} toggle_modal_={toggleDroneInitModal} create_new_drone_={CreateNewDroneObject}/>
@@ -326,7 +365,7 @@ function ManageObjects() {
                 <DeleteDrone drone_obj_array={drone_obj_array} show_delete_modal={showDroneDeleteModal} toggle_delete_modal_={toggleDroneDeleteModal} delete_drone={DeleteDroneObject} />
                 <CreateMission drone_obj_array={drone_obj_array} nest_obj_array={nest_obj_array} show_mission_modal={showMissionModal} toggle_mission_modal_={toggleMissionModal} launch_mission_={LaunchMission}/>
                 <DeleteNest nest_obj_array={nest_obj_array} show_delete_nest_modal={showNestDeleteModal} toggle_delete_nest_modal_={toggleNestDeleteModal} delete_nest={DeleteNestObject}/>
-                <NestCharge nest_obj_array={nest_obj_array} show_nest_charge_modal={showNestChargeModal} toggle_nest_charge_modal_={toggleNestChargeModal} initiate_charge={InitiateNestCharge}/>
+                <NestCharge nest_obj_array={nest_obj_array} show_nest_charge_modal={showNestChargeModal} toggle_nest_charge_modal_={toggleNestChargeModal} initiate_charge={InitiateNestCharge} stop_charge={StopNestCharge}/>
                 <DeployMissionNest drone_obj_array={drone_obj_array} show_deploy_nest_modal={showDeployNestModal} toggle_deploy_nest_modal_={toggleDeployNestModal} deploy_drone_nest={DeployDroneNest}/>
             </Row>
         </>
