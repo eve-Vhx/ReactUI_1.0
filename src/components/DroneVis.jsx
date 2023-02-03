@@ -19,10 +19,14 @@ import '../css/DN.css';
 function DroneVis(props) {
     
         const [currentTab, setCurrentTab] = useState('1');
-        const [droneonline, setDroneOnline]  = useState(' ')
+        // const [droneOnline, setDroneOnline]  = useState(' ')
+        const [showData, setShowData] = useState(false);
+
+        const toggleshowData = () =>setShowData(!showData);
 
         const handleTabClick = (e) => {
             setCurrentTab(e.target.id);
+            setShowData(true);
         }
 
         const droneOnlineID = [];
@@ -34,6 +38,10 @@ function DroneVis(props) {
                 droneOnlineDType.push(props.drone_obj_array[i].dtype);
             }
         }
+
+        // if (props.drone_obj_array.id != droneOnlineID){
+        //     setShowData(false);
+        // }
 
         return (
             <Container fluid className='dNBox justify-content-center'>
@@ -50,10 +58,10 @@ function DroneVis(props) {
 
                 </div>
                 
-                <div className='content justify-content-center'> 
+                <div className='content justify-content-center'  style={{display: showData ? 'block': 'none', transition: 'opacity 300ms ease-in'}}> 
                     {props.drone_obj_array.map((tab, i) =>
                         <div key={tab.id}> 
-                            {currentTab === `${tab.id}` && 
+                            {currentTab === `${tab.id}` && tab.initialized === true &&
                             <Col>
                             <Row className='dNTitle justify-content-center'>Telemetry</Row>
                                 <Row className='content justify-content-center'>gps_data  { tab.gps_position }</Row> 

@@ -47,7 +47,7 @@ function NestVis(props) {
             <div className='content'> 
                 {props.nest_obj_array.map((tab, i) =>
                     <div key={i}>
-                        {currentTab === `${tab.id}` && 
+                        {currentTab === `${tab.id}` && tab.initialized === true &&
                         <Col>
                         <Row className='dNTitle justify-content-center'>Mission Status</Row>
                             <Row className='content justify-content-center'>Position { tab.position }</Row>
