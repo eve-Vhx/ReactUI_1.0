@@ -33,8 +33,8 @@ function NestVis(props) {
 
     return (
         <Container fluid className='dNBox justify-content-center'>
+
             <div className='tabs justify-content-center'>
-               
                 {nestOnlineID.map((tab, i) =>
                     <>
                         <Button variant="secondary" 
@@ -51,6 +51,7 @@ function NestVis(props) {
                         <Col>
                         <Row className='dNTitle justify-content-center'>Mission Status</Row>
                             <Row className='content justify-content-center'>Position { tab.position }</Row>
+                            <Row className='content justify-content-center'>Charge Status { tab.charge_status }</Row>
                             <Row className='content justify-content-center'>state_data { tab.state_data }</Row>
                             <Row className='content justify-content-center'>battery_data { tab.battery_data }</Row>
                         <Row className='dNTitle justify-content-center'>Connection Status</Row>

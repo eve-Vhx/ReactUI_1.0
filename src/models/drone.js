@@ -25,5 +25,9 @@ export class Drone {
         this.lte_connect = null;
 
         this.initialized = false;
+
+        this.on_mission = false;
+        this.mission_status = "PENDING";
+        this.mission_destination_gps = [];
     }
 }

@@ -40,7 +40,7 @@ function DroneVis(props) {
         }
 
         return (
-            <Container fluid className='dNBox justify-content-center'>
+            <Container fluid className='justify-content-center'>
 
                 <div className='tabs justify-content-center'>
                     {droneOnlineID.map((tab, i) =>
@@ -52,26 +52,29 @@ function DroneVis(props) {
                     )}
                 </div>
                 
-                <div className='content'> 
+                <div className='dNBox '> 
                     {props.drone_obj_array.map((tab, i) =>
                         <div key={tab.id}> 
                             {currentTab === `${tab.id}` && tab.initialized === true &&
                             <Col>
                             <Row className='dNTitle justify-content-center'>Telemetry</Row>
-                                <Row className='content justify-content-center'>gps_data  { tab.gps_position }</Row> 
-                                <Row className='content justify-content-center'>distz_data  { tab.distance_z }</Row>
-                                <Row className='content justify-content-center'>velx_data { tab.vel_x }</Row>
-                                <Row className='content justify-content-center'>velz_data { tab.vel_z }</Row>
+                                <Row className='content justify-content-center'>GPS  { tab.gps_position }</Row> 
+                                <Row className='content justify-content-center'>GND Dist  { tab.distance_z }</Row>
+                                <Row className='content justify-content-center'>FWD Vel { tab.vel_x }</Row>
+                                <Row className='content justify-content-center'>Vert Vel { tab.vel_z }</Row>
+                                <Row className='content justify-content-center'>Battery {tab.battery }</Row>
                             <Row className='dNTitle justify-content-center'>Mission Status</Row>
+                                <Row className='content justify-content-center'>Mission Active {tab.on_mission }</Row>
+                                <Row className='content justify-content-center'>Mission Status {tab.mission_status }</Row>
+                                <Row className='content justify-content-center'>Destination GPS {tab.mission_destination_gps }</Row>
                                 <Row className='content justify-content-center'>state_data  { tab.state }</Row> 
                                 <Row className='content justify-content-center'>armed_data  { tab.armed }</Row>
-                                <Row className='content justify-content-center'>battery_data {tab.battery }</Row>
                             <Row className='dNTitle justify-content-center'>Connection Status</Row>
-                                <Row className='content justify-content-center'>mavros_ID  { tab.mavrosID }</Row> 
-                                <Row className='content justify-content-center'>mavros_connect_data  { tab.mavros_connect }</Row> 
-                                <Row className='content justify-content-center'>px4_connect_data  { tab.px4_connect }</Row>
-                                <Row className='content justify-content-center'>wifi_connect_data { tab.wifi_connect }</Row>
-                                <Row className='content justify-content-center'>lte_connect_data { tab.lte_connect }</Row>                   
+                                <Row className='content justify-content-center'>MAVROS ID  { tab.mavrosID }</Row> 
+                                <Row className='content justify-content-center'>MAVROS  { tab.mavros_connect }</Row> 
+                                <Row className='content justify-content-center'>PX4  { tab.px4_connect }</Row>
+                                <Row className='content justify-content-center'>WiFi { tab.wifi_connect }</Row>
+                                <Row className='content justify-content-center'>LTE { tab.lte_connect }</Row>                   
                             </Col> 
                             }
                         </div>

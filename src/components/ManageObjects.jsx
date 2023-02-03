@@ -15,10 +15,14 @@ import MapVis from './MapVis';
 import CreateDrone from './modals/CreateDrone';
 import CreateNest from './modals/CreateNest';
 import DeleteDrone from './modals/DeleteDrone';
+import DeleteNest from './modals/DeleteNest';
+import CreateMission from './modals/CreateMission';
+import NestCharge from './modals/NestCharge';
+import DeployMissionNest from './modals/DeployMissionNest';
 import ButtonGroup from "react-bootstrap/esm/ButtonGroup";
 
 //Import Ros topics
-import { ConnectionsDrone_incoming, GPS_incoming } from "../ROSTopics/rosTopics";
+import { ConnectionsDrone_incoming, GPS_incoming, Nest_charge_request_outgoing } from "../ROSTopics/rosTopics";
 import { Connection_checks_incoming } from "../ROSTopics/rosTopics";
 import { State_incoming } from "../ROSTopics/rosTopics";
 import { Distance_incoming } from "../ROSTopics/rosTopics";
@@ -26,6 +30,7 @@ import { Velocity_incoming } from "../ROSTopics/rosTopics";
 import { Battery_incoming } from "../ROSTopics/rosTopics";
 import { Gimbal_outgoing } from "../ROSTopics/rosTopics";
 import { Nest_gps_request_outgoing } from "../ROSTopics/rosTopics";
+import { Mission_request_outgoing } from "../ROSTopics/rosTopics";
 
 //Import models
 import { Drone } from "../models/drone";
@@ -40,15 +45,14 @@ var drone_obj_array = [];
 var nest_obj_array = [];
 
 //Initialize all drones
-var drone1_obj = new Drone('001','QROW',1,0,0);
+var drone1_obj = new Drone('001','QROW',30.391,-97.727,240);
 drone_obj_array.push(drone1_obj);
-var drone2_obj = new Drone('002','QROW',0,2,0);
+var drone2_obj = new Drone('002','QROW',30.392,-97.728,240);
 drone_obj_array.push(drone2_obj);
-var drone3_obj = new Drone('003','QROW',0,0,3);
-drone_obj_array.push(drone3_obj);
+
 
 //Initialize all nests
-var nest1_obj = new Nest('001',0,0,0);
+var nest1_obj = new Nest('001',30.390,-97.723,240);
 nest_obj_array.push(nest1_obj);
 
 
@@ -60,6 +64,10 @@ function ManageObjects() {
     const [showDroneDeleteModal, setShowDroneDeleteModal] = React.useState(false);
     const [showNestInitializeModal, setShowNestInitializeModal] = React.useState(false);
     const [showNestDeleteModal, setShowNestDeleteModal] = React.useState(false);
+    const [showMissionModal, setShowMissionModal]= React.useState(false);
+    const [showNestChargeModal, setShowNestChargeModal] = React.useState(false);
+    const [showDeployNestModal, setShowDeployNestModal] = React.useState(false);
+    const [nestDeployPosition, setNestDeployPosition] = React.useState([]);
 
     const ConnectSystemStatus = () =>setShowSystemStatus('success');
     const DisconnectSystemStatus = () =>setShowSystemStatus('danger');
@@ -67,6 +75,9 @@ function ManageObjects() {
     const toggleDroneDeleteModal = () =>setShowDroneDeleteModal(!showDroneDeleteModal);
     const toggleNestInitModal = () =>setShowNestInitializeModal(!showNestInitializeModal);
     const toggleNestDeleteModal = () =>setShowNestDeleteModal(!showNestDeleteModal);
+    const toggleMissionModal = () => setShowMissionModal(!showMissionModal);
+    const toggleNestChargeModal = () => setShowNestChargeModal(!showNestChargeModal);
+    const toggleDeployNestModal = () => setShowDeployNestModal(!showDeployNestModal); 
 
     function CreateNewDroneObject(type,vin) {
         for(var i=0; i<drone_obj_array.length; i++) {
@@ -102,6 +113,122 @@ function ManageObjects() {
             }
         }
         toggleNestDeleteModal();
+    }
+
+    function LaunchMission(droneID, destinationGPS) {
+        let service_client_obj = new Mission_request_outgoing()
+        let service_client = service_client_obj.service_client;
+
+        var request = new ROSLIB.ServiceRequest({
+        lat : parseFloat(destinationGPS[0]),
+        lon : parseFloat(destinationGPS[1]),
+        alt : parseFloat(destinationGPS[2])
+        });
+        console.log("Whats going to the service!!");
+        console.log(request);
+        service_client.callService(request, function(result) {
+        console.log('Result for service call: ' + result.completion);
+        });
+
+        for(var i=0; i<drone_obj_array.length; i++) {
+            if(drone_obj_array[i].id === droneID) {
+                drone_obj_array[i].on_mission = true;
+                drone_obj_array[i].mission_destination_gps = destinationGPS;
+            }
+        }
+
+        toggleMissionModal();
+    }
+
+    function InitiateNestCharge(id) {
+       console.log("Initiating nest charge");
+
+        let nest_charge_req_obj = new Nest_charge_request_outgoing();
+        let nest_charge_req = nest_charge_req_obj.service_client;
+
+        var request = new ROSLIB.ServiceRequest({
+            charge_drone : true
+        });
+            
+        console.log("Sending charge request through to server...");
+        nest_charge_req.callService(request, function(result) {
+            console.log('Result for service call: ');
+        });
+        nest_obj_array[0].charge_status = "CHARGING";
+        for(var i=0; i<nest_obj_array.length; i++) {
+            if(nest_obj_array[i].id === id) {
+                nest_obj_array[i].charge_status = true;
+            }
+        }
+        toggleNestChargeModal();
+    } 
+
+    function StopNestCharge(id) {
+        console.log("Stopping nest charge!");
+ 
+         let nest_charge_req_obj = new Nest_charge_request_outgoing();
+         let nest_charge_req = nest_charge_req_obj.service_client;
+ 
+         var request = new ROSLIB.ServiceRequest({
+             charge_drone : false
+         });
+         nest_obj_array[0].charge_status = "NOT CHARGING";
+         console.log("Sending charge request through to server...");
+         nest_charge_req.callService(request, function(result) {
+             console.log('Result for service call: ');
+         });
+         
+         for(var i=0; i<nest_obj_array.length; i++) {
+             if(nest_obj_array[i].id === id) {
+                 nest_obj_array[i].charge_status = false;
+             }
+         }
+         toggleNestChargeModal();
+     } 
+
+    function DeployDroneNest(droneID) {
+        console.log("deploying drone to nest...");
+
+        let service_client_obj = new Mission_request_outgoing()
+        let service_client = service_client_obj.service_client;
+
+        var request = new ROSLIB.ServiceRequest({
+        lat : parseFloat(nestDeployPosition[0]),
+        lon : parseFloat(nestDeployPosition[1]),
+        alt : parseFloat(nestDeployPosition[2])
+        });
+        console.log(nestDeployPosition);
+        service_client.callService(request, function(result) {
+        console.log('Result for service call: ');
+        });
+
+        for(var i=0; i<drone_obj_array.length; i++) {
+            if(drone_obj_array[i].id === droneID) {
+                drone_obj_array[i].on_mission = true;
+                drone_obj_array[i].mission_destination_gps = nestDeployPosition;
+            }
+        }
+
+        toggleDeployNestModal();
+    }
+
+    function UpdateNestPos(id) {
+        console.log("updating nest position...");
+
+        let service_client_obj = new Nest_gps_request_outgoing();
+        let service_client = service_client_obj.service_client;
+
+        var request = new ROSLIB.ServiceRequest({
+
+        });
+
+        service_client.callService(request, function(result) {
+        nest_obj_array[0].position = [result.latitude, result.longitude, result.altitude];
+        });
+    }
+
+    function setDestNestGPS(nest_pos) {
+        setNestDeployPosition(nest_pos);
     }
     
 
@@ -153,58 +280,58 @@ function ManageObjects() {
                                 //GPS subscriber
                                 GPS_incoming_obj.gps_listener1.subscribe( (message) => {
                                     if(message.lat != NaN) {
-                                        test_drone_obj.gps_position = [message.lat*(10**-7), message.lon*(10**-7), message.alt*(10**-3)]
+                                        drone_obj_array[0].gps_position = [message.lat*(10**-7), message.lon*(10**-7), message.alt*(10**-3)]
                                     }
                                 });
 
                                 //Drone connections subscriber
                                 Connections_drone_obj.connections_listener.subscribe( (message) => {
                                     if (message.mavros === true){
-                                        test_drone_obj.mavros_connect = "CONNECTED";
+                                        drone_obj_array[0].mavros_connect = "CONNECTED";
                                     } else if (message.mavros === false) {
-                                        test_drone_obj.mavros_connect = "DISCONNECTED";
+                                        drone_obj_array[0].mavros_connect = "DISCONNECTED";
                                     }
                                     if (message.px4 === true){
-                                        test_drone_obj.px4_connect = "CONNECTED"
-                                    } else if (message.px4 === false){test_drone_obj.px4_connect = "DISCONNECTED"}
+                                        drone_obj_array[0].px4_connect = "CONNECTED"
+                                    } else if (message.px4 === false){drone_obj_array[0].px4_connect = "DISCONNECTED"}
                                     if (message.wifi === true){
-                                        test_drone_obj.wifi_connect = "CONNECTED"
-                                    } else if (message.wifi === false) {test_drone_obj.wifi_connect = "DISCONNECTED"}
+                                        drone_obj_array[0].wifi_connect = "CONNECTED"
+                                    } else if (message.wifi === false) {drone_obj_array[0].wifi_connect = "DISCONNECTED"}
                                     if (message.lte === true){
-                                        test_drone_obj.lte_connect = "CONNECTED"
-                                    } else if (message.lte === false){test_drone_obj.lte_connect = "DISCONNECTED"}
+                                        drone_obj_array[0].lte_connect = "CONNECTED"
+                                    } else if (message.lte === false){drone_obj_array[0].lte_connect = "DISCONNECTED"}
     
                                 });
 
                                 //State subscriber
                                 State_incoming_obj.state_listener.subscribe( (message) => {
-                                    test_drone_obj.state = message.mode;
+                                    drone_obj_array[0].state = message.mode;
 
                                     if (message.armed == false) {
-                                        test_drone_obj.armed = "DISARMED";
+                                        drone_obj_array[0].armed = "DISARMED";
                                       }
                                       else if (message.armed == true) {
-                                        test_drone_obj.armed = "ARMED";
+                                        drone_obj_array[0].armed = "ARMED";
                                       }
                                       else {
-                                        test_drone_obj.armed = "DISCONNECTED FROM VEHICLE"
+                                        drone_obj_array[0].armed = "DISCONNECTED FROM VEHICLE"
                                       }
                                 });
                                 
                                 //Distance sensor subscriber
                                 Distance_incoming_obj.distance_listener.subscribe( (message) => {
-                                    test_drone_obj.distance_z = message.range.toFixed(1)
+                                    drone_obj_array[0].distance_z = message.range.toFixed(1)
                                 });
 
                                 //Velocity subscriber
                                 Velocity_incoming_obj.velocity_listener.subscribe( (message) => {
-                                    test_drone_obj.vel_x = message.twist.linear.x;
-                                    test_drone_obj.vel_z = message.twist.linear.z;
+                                    drone_obj_array[0].vel_x = message.twist.linear.x;
+                                    drone_obj_array[0].vel_z = message.twist.linear.z;
                                 });
 
                                 //Battery subscriber
                                 battery_incoming_obj.battery_listener.subscribe( (message) => {
-                                    test_drone_obj.battery = message.percentage;
+                                    drone_obj_array[0].battery = message.percentage;
                                 });
                         }}
                     >eve Connect</Button>
@@ -224,13 +351,22 @@ function ManageObjects() {
                 toggle_delete_modal_={toggleDroneDeleteModal} 
                 drone_obj_array={drone_obj_array}
                 toggle_nest_modal_={toggleNestInitModal} 
-                toggle__nest_delete_modal_={toggleNestDeleteModal} 
-                nest_obj_array={nest_obj_array}/>
+                toggle_nest_delete_modal_={toggleNestDeleteModal} 
+                nest_obj_array={nest_obj_array}
+                toggle_mission_modal={toggleMissionModal}
+                toggle_nest_charge_modal_={toggleNestChargeModal}
+                toggle_deploy_nest_modal_={toggleDeployNestModal}
+                set_dest_nest_gps_={setDestNestGPS}
+                update_nest_pos_={UpdateNestPos}/>
             </Row>
             <Row>
                 <CreateDrone drone_obj_array={drone_obj_array} show_modal={showDroneInitializeModal} toggle_modal_={toggleDroneInitModal} create_new_drone_={CreateNewDroneObject}/>
                 <CreateNest nest_obj_array={nest_obj_array} show_nest_modal={showNestInitializeModal} toggle_nest_modal_={toggleNestInitModal} create_new_nest_={CreateNewNestObject}/>
                 <DeleteDrone drone_obj_array={drone_obj_array} show_delete_modal={showDroneDeleteModal} toggle_delete_modal_={toggleDroneDeleteModal} delete_drone={DeleteDroneObject} />
+                <CreateMission drone_obj_array={drone_obj_array} nest_obj_array={nest_obj_array} show_mission_modal={showMissionModal} toggle_mission_modal_={toggleMissionModal} launch_mission_={LaunchMission}/>
+                <DeleteNest nest_obj_array={nest_obj_array} show_delete_nest_modal={showNestDeleteModal} toggle_delete_nest_modal_={toggleNestDeleteModal} delete_nest={DeleteNestObject}/>
+                <NestCharge nest_obj_array={nest_obj_array} show_nest_charge_modal={showNestChargeModal} toggle_nest_charge_modal_={toggleNestChargeModal} initiate_charge={InitiateNestCharge} stop_charge={StopNestCharge}/>
+                <DeployMissionNest drone_obj_array={drone_obj_array} show_deploy_nest_modal={showDeployNestModal} toggle_deploy_nest_modal_={toggleDeployNestModal} deploy_drone_nest={DeployDroneNest}/>
             </Row>
         </>
     );
