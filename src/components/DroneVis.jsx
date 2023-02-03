@@ -20,13 +20,13 @@ function DroneVis(props) {
     
         const [currentTab, setCurrentTab] = useState('1');
         // const [droneOnline, setDroneOnline]  = useState(' ')
-        const [showData, setShowData] = useState(false);
+        // const [showData, setShowData] = useState(false);
 
-        const toggleshowData = () =>setShowData(!showData);
+        // const toggleshowData = () =>setShowData(!showData);
 
         const handleTabClick = (e) => {
             setCurrentTab(e.target.id);
-            setShowData(true);
+            // setShowData(true);
         }
 
         const droneOnlineID = [];
@@ -38,10 +38,6 @@ function DroneVis(props) {
                 droneOnlineDType.push(props.drone_obj_array[i].dtype);
             }
         }
-
-        // if (props.drone_obj_array.id != droneOnlineID){
-        //     setShowData(false);
-        // }
 
         return (
             <Container fluid className='dNBox justify-content-center'>
