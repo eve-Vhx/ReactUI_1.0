@@ -3,12 +3,12 @@ html, body {
     padding: 0 !important;
 }
 .dNBox {
-    border: solid #27276D 2px;
-    outline: solid darkgray 2px;
-    border-collapse: separate;
-    border-radius: 10px;
+    /* border: solid #27276D 2px; */
+    /* outline: solid darkgray 2px; */
+    /* border-collapse: separate; */
+    /* border-radius: 10px; */
     overflow: hidden;
-    background-color: grey;
+    /* background-color: grey; */
     opacity: 100%;
     font-size: 15px;
     margin-top: 10px;

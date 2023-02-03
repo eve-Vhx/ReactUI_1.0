@@ -47,7 +47,6 @@ function DroneVis(props) {
             <Container fluid className='dNBox justify-content-center'>
 
                 <div className='tabs justify-content-center'>
-                    
                     {droneOnlineID.map((tab, i) =>
                         <>
                             <Button variant="secondary" 
@@ -55,10 +54,9 @@ function DroneVis(props) {
                             onClick={(handleTabClick)}>{droneOnlineDType[i] + ' ' + tab}</Button>
                         </>
                     )}
-
                 </div>
                 
-                <div className='content justify-content-center'  style={{display: showData ? 'block': 'none', transition: 'opacity 300ms ease-in'}}> 
+                <div className='content'> 
                     {props.drone_obj_array.map((tab, i) =>
                         <div key={tab.id}> 
                             {currentTab === `${tab.id}` && tab.initialized === true &&
