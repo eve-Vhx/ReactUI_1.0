@@ -67,8 +67,8 @@ function DroneVis(props) {
                                 <Row className='content justify-content-center'>Mission Active {tab.on_mission }</Row>
                                 <Row className='content justify-content-center'>Mission Status {tab.mission_status }</Row>
                                 <Row className='content justify-content-center'>Destination GPS {tab.mission_destination_gps }</Row>
-                                <Row className='content justify-content-center'>state_data  { tab.state }</Row> 
-                                <Row className='content justify-content-center'>armed_data  { tab.armed }</Row>
+                                <Row className='content justify-content-center'>State Data  { tab.state }</Row> 
+                                <Row className='content justify-content-center'>Armed Data  { tab.armed }</Row>
                             <Row className='dNTitle justify-content-center'>Connection Status</Row>
                                 <Row className='content justify-content-center'>MAVROS ID  { tab.mavrosID }</Row> 
                                 <Row className='content justify-content-center'>MAVROS  { tab.mavros_connect }</Row> 
