@@ -72,7 +72,12 @@ function MapVis(props) {
                             </Container>
                         </Card.Body>
                         <Card.Footer>
-                            <Button variant="success" onClick={props.toggle_mission_modal}>Deploy Drone</Button>
+                            <Row className="pb-2">
+                                <Button variant="success" onClick={props.toggle_mission_modal}>Deploy Drone</Button>
+                            </Row>
+                            <Row>
+                                <Button variant="warning" onClick={props.toggle_arming_modal}>Arm Drone</Button>
+                            </Row>
                         </Card.Footer>
                     </Card>
                 </Popup>) }

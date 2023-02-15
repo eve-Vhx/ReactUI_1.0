@@ -10,6 +10,7 @@ import Row from "react-bootstrap/Row";
 import Container from "react-bootstrap/Container";
 import Badge from "react-bootstrap/Badge";
 import Table from "react-bootstrap/Table";
+import ButtonGroup from "react-bootstrap/esm/ButtonGroup";
 //Import components
 import MapVis from './MapVis';
 import CreateDrone from './modals/CreateDrone';
@@ -19,7 +20,6 @@ import DeleteNest from './modals/DeleteNest';
 import CreateMission from './modals/CreateMission';
 import NestCharge from './modals/NestCharge';
 import DeployMissionNest from './modals/DeployMissionNest';
-import ButtonGroup from "react-bootstrap/esm/ButtonGroup";
 
 //Import Ros topics
 import { ConnectionsDrone_incoming, GPS_incoming, Nest_charge_request_outgoing } from "../ROSTopics/rosTopics";
@@ -230,6 +230,7 @@ function ManageObjects() {
     function setDestNestGPS(nest_pos) {
         setNestDeployPosition(nest_pos);
     }
+
     
 
 
@@ -357,7 +358,8 @@ function ManageObjects() {
                 toggle_nest_charge_modal_={toggleNestChargeModal}
                 toggle_deploy_nest_modal_={toggleDeployNestModal}
                 set_dest_nest_gps_={setDestNestGPS}
-                update_nest_pos_={UpdateNestPos}/>
+                update_nest_pos_={UpdateNestPos}
+                />
             </Row>
             <Row>
                 <CreateDrone drone_obj_array={drone_obj_array} show_modal={showDroneInitializeModal} toggle_modal_={toggleDroneInitModal} create_new_drone_={CreateNewDroneObject}/>
