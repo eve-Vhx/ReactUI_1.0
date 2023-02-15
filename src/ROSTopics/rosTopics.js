@@ -36,6 +36,16 @@ export class Mission_request_outgoing {
     }
 }
 
+export class Arm_request_outgoing {
+    constructor() {
+        this.service_client = new ROSLIB.Service({
+            ros : ros,
+            name : '/ui_arm_req',
+            serviceType : 'msg_pkg/armDrone'
+        });
+    }
+}
+
 export class Nest_charge_request_outgoing {
     constructor() {
         this.service_client = new ROSLIB.Service({

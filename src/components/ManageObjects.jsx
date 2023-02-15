@@ -32,6 +32,7 @@ import { Battery_incoming } from "../ROSTopics/rosTopics";
 import { Gimbal_outgoing } from "../ROSTopics/rosTopics";
 import { Nest_gps_request_outgoing } from "../ROSTopics/rosTopics";
 import { Mission_request_outgoing } from "../ROSTopics/rosTopics";
+import { Arm_request_outgoing } from "../ROSTopics/rosTopics";
 
 //Import models
 import { Drone } from "../models/drone";
@@ -235,7 +236,17 @@ function ManageObjects() {
     }
 
     function requestArmDrone(droneID) {
-        console.log("ready to send service");
+        let service_client_obj = new Arm_request_outgoing()
+        let service_client = service_client_obj.service_client;
+
+        var request = new ROSLIB.ServiceRequest({
+        
+        });
+        console.log("Sending arm request to the server");
+        console.log(request);
+        service_client.callService(request, function(result) {
+        console.log('Result for service call: ');
+        });
         toggleArmingModal();
     }
 
@@ -273,8 +284,8 @@ function ManageObjects() {
                         variant="outline-success" 
                         onClick={ () => {
                             if(!rosConnected) {
-                                ros.connect('ws://10.0.30.232:8080/');
-                                //ros.connect('ws://localhost:8080/');
+                                //ros.connect('ws://10.0.30.232:8080/');
+                                ros.connect('ws://localhost:9090/');
                             }
                                 //ROS Topic objects
                                 let GPS_incoming_obj = new GPS_incoming()
