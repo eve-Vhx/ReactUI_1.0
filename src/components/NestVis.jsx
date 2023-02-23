@@ -53,10 +53,10 @@ function NestVis(props) {
                             <Row className='content justify-content-center'>Position { tab.position }</Row>
                             <Row className='content justify-content-center'>Charge Status { tab.charge_status }</Row>
                             <Row className='content justify-content-center'>State Data { tab.state_data }</Row>
-                            <Row className='content justify-content-center'>Battery Data { tab.battery_data }</Row>
+                            <Row className='content justify-content-center'>Battery { tab.battery }</Row>
                         <Row className='dNTitle justify-content-center'>Connection Status</Row>
-                            <Row className='content justify-content-center'>WiFi { tab.wifi_connect_data }</Row>
-                            <Row className='content justify-content-center'>LTE { tab.lte_connect_data }</Row>
+                            <Row className='content justify-content-center'>WiFi { tab.wifi_connect }</Row>
+                            <Row className='content justify-content-center'>LTE { tab.lte_connect }</Row>
                         </Col>
                         }
                     </div>

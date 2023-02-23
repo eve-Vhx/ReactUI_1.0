@@ -15,5 +15,19 @@ export class Nest {
 
         this.initialized =false;
         this.charge_status = false;
+        this.state_data = 'Stationary';
+        this.battery = '72 %';
+        this.wifi_connect = 'online';
+        this.lte_connect = 'online';
     }
 }
+
+// export class Nest {
+//     constructor(id, latitude, longitude, altitude) {
+//         this.id = id;
+//         this.position = [latitude, longitude, altitude];
+
+//         this.initialized =false;
+//         this.charge_status = false;
+//     }
+// }
